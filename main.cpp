@@ -9,7 +9,7 @@
 
 namespace fs = std::filesystem;
 
-const std::string VERSION = "1.0.0-fucking-alpha";
+const std::string VERSION = "1.0.1-real-wipe";
 
 struct Point {
     int x, y;
@@ -17,15 +17,17 @@ struct Point {
 
 void print_help(const char* prog_name) {
     std::cout << "Very Fucking File Snake (VFFS)\n\n";
+    std::cout << "Usage:\n";
+    std::cout << "  " << prog_name << " [options]\n\n";
     std::cout << "Options:\n";
-    std::cout << "  -h, --help       Show this fucking help\n";
-    std::cout << "  -v, --version    Show fucking version info\n";
-    std::cout << "  -d <path>        Specify the fucking target directory\n";
+    std::cout << "  -h, --help       Show this help menu\n";
+    std::cout << "  -v, --version    Show version info\n";
+    std::cout << "  -d <path>        Specify the target directory (default: current directory)\n";
 }
 
 void check_not_root() {
     if (getuid() == 0 || geteuid() == 0) {
-        std::cerr << "FUCK: Running as root is strictly prohibited. Sorry.\n";
+        std::cerr << "ERROR: Running as root is strictly prohibited.\n";
         exit(EXIT_FAILURE);
     }
 }
@@ -65,18 +67,16 @@ std::vector<fs::path> get_target_files(const fs::path& base_dir, const fs::path&
     return files;
 }
 
-void wipe_directory(const fs::path& target_dir, const fs::path& backup_dir) {
+void wipe_directory(const fs::path& target_dir) {
     endwin();
-    std::cout << "GAME OVER!\n";
+    std::cout << "GAME OVER! The snake bit its own tail.\n";
     std::cout << "Wiping directory: " << target_dir << " ...\n";
 
     try {
         for (const auto& entry : fs::directory_iterator(target_dir)) {
-            if (entry.path() != backup_dir) {
-                fs::remove_all(entry.path());
-            }
+            fs::remove_all(entry.path());
         }
-        std::cout << "Directory successfully formatted.\n";
+        std::cout << "Directory successfully formatted. Nothing survived.\n";
     } catch (const std::exception& e) {
         std::cerr << "Error during wipe: " << e.what() << "\n";
     }
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 
     std::vector<fs::path> available_files = get_target_files(target_dir, backup_dir);
     if (available_files.empty()) {
-        std::cout << "No files to eat in target directory. Add some dummy files (or something like vmlinuz-* if you use fucking archlinux/cachyos-shit xd) and return.\n";
+        std::cout << "No files to eat in target directory. Add some dummy files (or something like vmlinuz* if you are fucking archlinux/cachyos-shit user lolxd) and return.\n";
         return 0;
     }
 
@@ -169,7 +169,7 @@ int main(int argc, char* argv[]) {
 
         for (const auto& part : snake) {
             if (part.x == next_head.x && part.y == next_head.y) {
-                wipe_directory(target_dir, backup_dir);
+                wipe_directory(target_dir);
             }
         }
 
